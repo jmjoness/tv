@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TV Schedule</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href='style.css'>
+</head>
+<body onload="init()">
+	<div id="page">
+		<div id="header">
+			<h2 id="title-header">TV Schedule</h2>
+		</div>
+		<div id="main-page">
+			<div class="control-row">
+				<input type="date" id="sched-date" class="sel-date" >
+				<input type="button" id="sched-button" class="sel-button" value="Show" onclick="schedule()">
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>Network</th>
+						<th>7:00</th>
+						<th>7:30</th>
+						<th>8:00</th>
+						<th>8:30</th>
+						<th>9:00</th>
+						<th>9:30</th>
+					</tr>
+				</thead>
+				<!-- JavaScript will insert rows here -->
+				<tbody id="table-body"></tbody>
+			</table>	
+		</div>
+	</div>
+</html>
+
+<script type="text/javascript">
+
+	const netTimeMap = new Map()
+	netTimeMap.set("ABC", ["", "", "", "", "", ""])
+	netTimeMap.set("CBS", ["", "", "", "", "", ""])
+	netTimeMap.set("NBC", ["", "", "", "", "", ""])
+	netTimeMap.set("FOX", ["", "", "", "", "", ""])
+	netTimeMap.set("PBS", ["", "", "", "", "", ""])
+
+	const networks = ['ABC', 'CBS', 'NBC', 'FOX', 'PBS']
+
+	const dateField = document.getElementById("sched-date")
+	const tblBody = document.getElementById("table-body")
+
+	function init() {
+		const today = new Date().toLocaleDateString('sv')
+		dateField.value = today
+		// dateField.value = new Date()
+		// getShows()
+	}
+
+	function schedule() {
+		tblBody.innerHTML = ""
+		for (let n of networks) {
+			netTimeMap.set(n, ["", "", "", "", "", ""])
+		}
+		getShows()
+	}
+
+	async function getShows() {
+		const dateStr = dateField.value
+		const dateAry = dateStr.split('-')
+		const year = parseInt(dateAry[0])
+		const month = parseInt(dateAry[1])
+		const day = parseInt(dateAry[2])
+		const selDate = new Date(dateField.value)
+		// const now = new Date()
+		// const year = selDate.getFullYear()
+		// const month = selDate.getMonth() + 1
+		// const day = selDate.getDate()
+		console.log(dateField.value, year, month, day)
+		const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+		const url = "https://api.tvmaze.com/schedule?country=US&date=" + formattedDate
+
+		try {
+			const response = await fetch(url, { method: 'GET', headers: {'Accept': 'application/json'} })
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`)
+			}
+
+			const data = await response.json()
+
+			data.forEach (item => {
+				const show = item.show
+				if (show.network != null) {
+					const netName = show.network.name.replace('"', '')
+					if (item.airtime != null) {
+						const airStr = item.airtime.replace('"', '')
+						const airAry = airStr.split(':')
+						let airHr = parseInt(airAry[0])
+						let airMin = parseInt(airAry[1])
+						const timeFmt = `${airHr}:${airMin}`
+
+						if ((airHr >= 19) && (airHr < 23) && networks.includes(netName)) {
+							airHr -= 13
+
+							const timeIndex = (airHr - 7) * 2 + ((airMin > 15) ? 1 : 0)
+							const showAry = netTimeMap.get(netName)
+							showAry[timeIndex] = show.name
+							netTimeMap.set(netName, showAry)
+						}
+					}
+				}
+			})
+
+			showShows()
+			
+		} catch (error) {
+			console.error('Fetch operation failed:', error)
+		}
+	}
+
+	function showShows() {
+		try {
+			for (let n of networks) {
+				const showAry = netTimeMap.get(n) 
+				const row = document.createElement("tr")
+
+				const cell = document.createElement("td")
+				cell.textContent = n
+				row.appendChild(cell)	
+
+				for (let i = 0; i < 6; i++) {
+					const cell = document.createElement("td")
+					cell.textContent = showAry[i]
+					row.appendChild(cell)	
+				}
+
+				tblBody.appendChild(row)
+			}
+		} catch (error) {
+			console.error('Show table failed:', error)
+		}
+	}
+
+</script>

@@ -1,0 +1,113 @@
+body {
+	margin: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+	height: 100%;
+}
+input {
+	font-size: 24px;
+}
+select {
+	font-size: 24px;
+}
+label {
+	font-size: 24px;
+}
+
+h3 {
+	font-size: large;
+	text-align: left;
+	margin-left: 60px;
+}
+
+p {
+	font-size: medium;
+	margin-left: 80px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#page {
+	display: flex;
+	flex-flow: column;
+	justify-content: flex-start;
+	gap: 3px;
+	background-color: #c0c0ff;
+	width: 100%;
+	height: 100vh;
+}
+#header {
+	display: flex;
+	flex-flow: row;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	/* height: 60px; */
+	background-color: blue;
+	color: white;
+	padding-left: 20px;
+}
+
+#main-page {
+	display: flex;
+	flex-flow: column;
+	justify-content: flex-start;
+	align-items: center;
+	/* background-image: url(building.jpg); */
+	background-size: 480px;
+	background-color: #c0c0ff;
+	/* padding-bottom: 50px; */
+	width: 480px;
+	height: 326px;
+	margin: 3px auto;
+}
+
+.sel-button {
+	margin-left: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: #c0c0ff;
+	height: 40px;
+	width: 80px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 24px;
+	border-radius: 8px;
+	box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.sel-date {
+	margin-left: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: #c0c0ff;
+	height: 33px;
+	width: 120px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 20px;
+	border-radius: 8px;
+	box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.instruction {
+	font-size: 18px;
+	width: 80%;
+	margin: 10px auto;
+	background-color: #c0c0ff;
+}
+
+table, th, td {
+	font-size: 20px;
+	border: 1px solid;
+	border-collapse: collapse;
+}
+
+td {
+	padding: 2px 20px;
+}
+
+.control-row {
+	display: flex;
+	flex-flow: row;
+
+}
